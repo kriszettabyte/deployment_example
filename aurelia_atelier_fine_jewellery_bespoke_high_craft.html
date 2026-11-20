@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURELIA ATELIER — Fine Jewellery & Bespoke High Craft</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Editorial Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            alabaster: '#FAFAFA',
+            ivory: '#F5F3EF',
+            obsidian: '#18181B',
+            champagne: '#C5A059',
+            brass: '#A6833E',
+            stone: '#71717A',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'editorial': '0 24px 60px -15px rgba(24, 24, 27, 0.06)',
+            'gold-glow': '0 12px 32px -8px rgba(197, 160, 89, 0.28)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Editorial Typography & Smooth Scroll Foundation */
+    :root {
+      --champagne: #C5A059;
+      --obsidian: #18181B;
+      --ivory: #F5F3EF;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: #FFFFFF;
+      color: #18181B;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hide default cursor on non-touch desktop screens for custom magnetic cursor */
+    @media (hover: hover) and (pointer: fine) {
+      body.custom-cursor-active,
+      body.custom-cursor-active a,
+      body.custom-cursor-active button,
+      body.custom-cursor-active input,
+      body.custom-cursor-active select,
+      body.custom-cursor-active textarea {
+        cursor: none !important;
+      }
+    }
+
+    /* Custom Trailing Magnetic Cursor */
+    #cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      background-color: #18181B;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.25s ease, background-color 0.25s ease, transform 0.15s ease;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(197, 160, 89, 0.65);
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.35s ease,
+                  border-color 0.35s ease,
+                  opacity 0.25s ease;
+    }
+
+    #cursor-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      font-weight: 600;
+      color: #FFFFFF;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #cursor-ring.cursor-hover {
+      width: 54px;
+      height: 54px;
+      background-color: rgba(197, 160, 89, 0.12);
+      border-color: #C5A059;
+    }
+
+    #cursor-ring.cursor-action {
+      width: 76px;
+      height: 76px;
+      background-color: rgba(24, 24, 27, 0.92);
+      border-color: #C5A059;
+      backdrop-filter: blur(4px);
+    }
+
+    #cursor-ring.cursor-action #cursor-label {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Top Scroll Progress Hairline */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #C5A059, #E4C988, #A6833E);
+      z-index: 100;
+      transition: width 0.08s ease-out;
+    }
+
+    /* Scroll Choreography Reveal Animations */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(34px);
+      transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-up.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-scale.is-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Specular Mouse-Reactive Sheen on Cards */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tilt-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle 280px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.55), rgba(197, 160, 89, 0.08) 45%, transparent 80%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      z-index: 10;
+    }
+
+    .tilt-card:hover .tilt-sheen {
+      opacity: 1;
+    }
+
+    /* 3D Interactive Metallic Payment Card */
+    .credit-card-surface {
+      background: linear-gradient(135deg, #FBF9F5 0%, #EFECE6 48%, #E5DEC9 100%);
+      border: 1px solid rgba(197, 160, 89, 0.45);
+      box-shadow: 0 25px 50px -12px rgba(24, 24, 27, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .credit-card-surface::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.65) 50%, transparent 60%);
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+
+    /* Subtle Geometric Shimmer */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1.5deg); }
+    }
+    .animate-float-slow {
+      animation: floatSlow 7s ease-in-out infinite;
+    }
+
+    /* Custom Thin Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FAFAFA;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4CFC7;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C5A059;
+    }
+  </style>
+</head>
+<body class="bg-white text-obsidian selection:bg-champagne/20 selection:text-obsidian">
+
+  <!-- Top Scroll Progress Indicator -->
+  <div id="scroll-progress"></div>
+
+  <!-- Custom Magnetic & Trailing Cursor Elements (Desktop) -->
+  <div id="cursor-dot" class="hidden md:block"></div>
+  <div id="cursor-ring" class="hidden md:flex">
+    <span id="cursor-label">EXPLORE</span>
+  </div>
+
+  <!-- Ambient Mouse-Reactive Radial Backdrop Glow -->
+  <div id="ambient-glow" class="pointer-events-none fixed inset-0 z-0 opacity-60 transition-opacity duration-500" style="background: radial-gradient(650px circle at 50% 30%, rgba(197, 160, 89, 0.055), transparent 70%);"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. MINIMALIST STICKY HEADER                                           -->
+  <!-- ===================================================================== -->
+  <header id="main-header" class="fixed top-0 inset-x-0 z-40 transition-all duration-500 bg-white/80 backdrop-blur-md border-b border-stone-200/60">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+      
+      <!-- Brand Wordmark -->
+      <a href="#top" onclick="switchView('landing')" class="group flex items-center gap-3 magnetic-target" data-cursor="HOME">
+        <svg class="w-7 h-7 text-champagne transition-transform duration-700 group-hover:rotate-45" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+          <polygon points="18,2 34,18 18,34 2,18" />
+          <circle cx="18" cy="18" r="5" />
+          <line x1="18" y1="2" x2="18" y2="13" />
+          <line x1="18" y1="23" x2="18" y2="34" />
+        </svg>
+        <div class="flex flex-col">
+          <span class="font-serif text-xl md:text-2xl tracking-[0.22em] font-medium text-obsidian leading-none">AURELIA</span>
+          <span class="text-[9px] tracking-[0.38em] uppercase text-champagne mt-1 font-medium">Atelier • Paris & Mumbai</span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="hidden md:flex items-center gap-9 text-xs tracking-[0.18em] uppercase font-medium text-obsidian/80">
+        <a href="#collections" onclick="switchView('landing')" class="hover:text-champagne transition-colors py-2 magnetic-target">Collections</a>
+        <a href="#atelier" onclick="switchView('landing')" class="hover:text-champagne transition-colors py-2 magnetic-target">Atelier Story</a>
+        <a href="#contact" onclick="switchView('landing')" class="hover:text-champagne transition-colors py-2 magnetic-target">Bespoke & Contact</a>
+        <button onclick="switchView('checkout')" class="hover:text-champagne transition-colors py-2 flex items-center gap-1.5 magnetic-target text-obsidian">
+          <span>Checkout</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-champagne"></span>
+        </button>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-3 md:gap-5">
+        <!-- Quick Search Trigger -->
+        <button onclick="toggleSearchBar()" aria-label="Search pieces" class="p-2.5 rounded-full hover:bg-ivory transition-colors text-obsidian/80 hover:text-obsidian magnetic-target">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <!-- Shopping Bag Trigger -->
+        <button onclick="openCartDrawer()" class="relative flex items-center gap-2.5 px-4 py-2 rounded-full border border-stone-200 hover:border-champagne bg-white/90 hover:bg-ivory/60 transition-all duration-300 magnetic-target" data-cursor="BAG">
+          <svg class="w-4 h-4 text-obsidian" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M6 7h12l1 13H5L6 7z" stroke-linejoin="round" />
+            <path d="M9 7V5a3 3 0 016 0v2" stroke-linecap="round" />
+          </svg>
+          <span class="text-xs tracking-[0.14em] uppercase font-medium hidden sm:inline">Bag</span>
+          <span id="header-bag-count" class="w-5 h-5 rounded-full bg-obsidian text-white text-[10px] font-semibold flex items-center justify-center transition-transform">2</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileMenu()" aria-label="Toggle Menu" class="md:hidden p-2.5 rounded-full hover:bg-ivory text-obsidian">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Expandable Search Bar -->
+    <div id="search-drawer" class="hidden border-t border-stone-200/70 bg-white/95 backdrop-blur-lg px-6 py-4">
+      <div class="max-w-3xl mx-auto flex items-center gap-4">
+        <svg class="w-4 h-4 text-champagne shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" stroke-linecap="round" />
+        </svg>
+        <input id="global-search-input" type="text" oninput="handleSearchFilter(this.value)" placeholder="Search solitaire rings, 18k gold collars, emerald drops..." class="w-full bg-transparent text-sm text-obsidian placeholder-stone-400 focus:outline-none" />
+        <button onclick="toggleSearchBar()" class="text-xs uppercase tracking-widest text-stone-400 hover:text-obsidian">Close</button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-stone-200/70 bg-white px-6 py-6 space-y-4">
+      <a href="#collections" onclick="switchView('landing'); toggleMobileMenu()" class="block text-xs tracking-[0.2em] uppercase py-2 text-obsidian">Collections</a>
+      <a href="#atelier" onclick="switchView('landing'); toggleMobileMenu()" class="block text-xs tracking-[0.2em] uppercase py-2 text-obsidian">Atelier Story</a>
+      <a href="#contact" onclick="switchView('landing'); toggleMobileMenu()" class="block text-xs tracking-[0.2em] uppercase py-2 text-obsidian">Bespoke & Contact</a>
+      <button onclick="switchView('checkout'); toggleMobileMenu()" class="block w-full text-left text-xs tracking-[0.2em] uppercase py-2 text-champagne font-semibold">Checkout & Payment →</button>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN LANDING EXPERIENCE VIEW                                          -->
+  <!-- ===================================================================== -->
+  <main id="landing-view" class="relative z-10 pt-20">
+
+    <!-- =================================================================== -->
+    <!-- 2. HERO SECTION (ASYMMETRIC EDITORIAL + 3D TILT SHOWCASE)            -->
+    <!-- =================================================================== -->
+    <section id="top" class="relative min-h-[92vh] flex items-center overflow-hidden bg-gradient-to-b from-white via-alabaster to-ivory/50 border-b border-stone-200/60">
+      <!-- Architectural Minimalist Geometric Line Art -->
+      <svg class="pointer-events-none absolute right-[-8%] top-[8%] w-[640px] h-[640px] text-champagne/20 animate-float-slow" viewBox="0 0 600 600" fill="none" stroke="currentColor" stroke-width="0.75">
+        <circle cx="300" cy="300" r="260" />
+        <circle cx="300" cy="300" r="195" stroke-dasharray="4 6" />
+        <polygon points="300,25 575,300 300,575 25,300" />
+        <line x1="0" y1="300" x2="600" y2="300" />
+        <line x1="300" y1="0" x2="300" y2="600" />
+      </svg>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-24 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+        
+        <!-- Left Asymmetric Editorial Column -->
+        <div class="lg:col-span-7 space-y-8">
+          <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-ivory border border-champagne/30 reveal-up is-visible">
+            <span class="w-1.5 h-1.5 rounded-full bg-champagne"></span>
+            <span class="text-[10px] tracking-[0.26em] uppercase font-medium text-obsidian/80">Haute Joaillerie • Autumn / Winter 2026</span>
+          </div>
+
+          <h1 class="font-serif text-5xl sm:text-6xl lg:text-[5.1rem] font-light tracking-[-0.02em] leading-[1.04] text-obsidian reveal-up is-visible" style="transition-delay: 100ms;">
+            Sculpted Light in <br />
+            <span class="italic font-normal text-champagne">Architectural</span> Gold.
+          </h1>
+
+          <p class="max-w-xl text-base sm:text-lg text-stone-600 font-light leading-relaxed reveal-up is-visible" style="transition-delay: 200ms;">
+            Hand-forged in recycled 18k champagne gold and conflict-free solitaire diamonds. Each Aurelia creation balances poetic weightlessness with enduring sculptural geometry.
+          </p>
+
+          <!-- Dual CTAs -->
+          <div class="flex flex-wrap items-center gap-4 pt-2 reveal-up is-visible" style="transition-delay: 300ms;">
+            <a href="#collections" class="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.2em] uppercase font-medium hover:bg-champagne transition-all duration-500 shadow-editorial magnetic-target" data-cursor="EXPLORE">
+              <span>Explore Collection</span>
+              <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6" />
+              </svg>
+            </a>
+
+            <a href="#atelier" class="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-stone-300 bg-white/80 hover:border-obsidian text-obsidian text-xs tracking-[0.2em] uppercase font-medium transition-all duration-300 magnetic-target" data-cursor="STORY">
+              <span>Our Craft</span>
+            </a>
+          </div>
+
+          <!-- Editorial Atelier Micro-Specs -->
+          <div class="pt-8 border-t border-stone-200/80 grid grid-cols-3 gap-6 max-w-lg reveal-up is-visible" style="transition-delay: 400ms;">
+            <div>
+              <p class="font-serif text-2xl sm:text-3xl text-obsidian">18k</p>
+              <p class="text-[11px] tracking-[0.14em] uppercase text-stone-500 mt-0.5">Recycled Gold</p>
+            </div>
+            <div>
+              <p class="font-serif text-2xl sm:text-3xl text-obsidian">GIA</p>
+              <p class="text-[11px] tracking-[0.14em] uppercase text-stone-500 mt-0.5">Certified Stones</p>
+            </div>
+            <div>
+              <p class="font-serif text-2xl sm:text-3xl text-obsidian">100%</p>
+              <p class="text-[11px] tracking-[0.14em] uppercase text-stone-500 mt-0.5">Hand-Finished</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Interactive 3D-Tilt Hero Jewellery Showcase Card -->
+        <div class="lg:col-span-5 flex justify-center lg:justify-end reveal-scale is-visible" style="transition-delay: 250ms;">
+          <div class="tilt-card group relative w-full max-w-[440px] rounded-[2rem] bg-white p-6 sm:p-8 border border-stone-200/80 shadow-editorial cursor-pointer" data-cursor="VIEW PIECE" onclick="openQuickView(1)">
+            <div class="tilt-sheen"></div>
+            
+            <!-- Top Card Metadata -->
+            <div class="flex items-center justify-between text-[10px] tracking-[0.22em] uppercase text-stone-500 mb-6">
+              <span>Signature Edition • No. 01</span>
+              <span class="text-champagne font-semibold">18K Champagne Gold</span>
+            </div>
+
+            <!-- Bespoke High-Luxury Visual Stage -->
+            <div class="relative aspect-[4/4.3] rounded-2xl bg-gradient-to-br from-ivory via-[#FAF8F5] to-[#EFECE6] flex items-center justify-center overflow-hidden border border-stone-100">
+              <!-- Subtle Concentric Halo -->
+              <div class="absolute w-64 h-64 rounded-full border border-champagne/25 transition-transform duration-700 group-hover:scale-110"></div>
+              <div class="absolute w-44 h-44 rounded-full border border-champagne/40 transition-transform duration-700 group-hover:scale-95"></div>
+
+              <!-- Custom High-Detail Fine Jewellery Solitaire Ring Vector Illustration -->
+              <svg class="w-64 h-64 drop-shadow-[0_22px_28px_rgba(166,131,62,0.28)] transition-transform duration-700 group-hover:scale-105" viewBox="0 0 260 260" fill="none">
+                <defs>
+                  <linearGradient id="goldBand" x1="40" y1="60" x2="220" y2="210" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#E7CE94" />
+                    <stop offset="35%" stop-color="#C5A059" />
+                    <stop offset="70%" stop-color="#F3E2B8" />
+                    <stop offset="100%" stop-color="#9A7634" />
+                  </linearGradient>
+                  <linearGradient id="diamondFacet" x1="100" y1="30" x2="160" y2="95" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FFFFFF" />
+                    <stop offset="45%" stop-color="#F2F6FA" />
+                    <stop offset="100%" stop-color="#D6DFE8" />
+                  </linearGradient>
+                </defs>
+                <!-- Outer Gold Band -->
+                <circle cx="130" cy="148" r="68" stroke="url(#goldBand)" stroke-width="13" />
+                <circle cx="130" cy="148" r="61.5" stroke="#FFFDF8" stroke-opacity="0.65" stroke-width="1.2" />
+                <!-- Cathedral Prongs -->
+                <path d="M108 86 L116 64 L144 64 L152 86" stroke="url(#goldBand)" stroke-width="4" stroke-linejoin="round" />
+                <!-- Emerald-Cut Diamond Crown -->
+                <polygon points="113,44 147,44 158,60 130,84 102,60" fill="url(#diamondFacet)" stroke="#B8C4D0" stroke-width="1.2" />
+                <polygon points="118,49 142,49 149,59 130,76 111,59" fill="none" stroke="#FFFFFF" stroke-width="1.2" />
+                <line x1="113" y1="44" x2="118" y2="49" stroke="#CBD5E1" stroke-width="1" />
+                <line x1="147" y1="44" x2="142" y2="49" stroke="#CBD5E1" stroke-width="1" />
+                <line x1="158" y1="60" x2="149" y2="59" stroke="#CBD5E1" stroke-width="1" />
+                <line x1="102" y1="60" x2="111" y2="59" stroke="#CBD5E1" stroke-width="1" />
+                <!-- Specular Star Sparkle -->
+                <path d="M158 34 L160 41 L167 43 L160 45 L158 52 L156 45 L149 43 L156 41 Z" fill="#FFFFFF" />
+              </svg>
+
+              <!-- Floating Interactive Pill -->
+              <span class="absolute bottom-4 right-4 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-[10px] tracking-[0.18em] uppercase font-medium text-obsidian border border-stone-200/80 shadow-sm">
+                Quick Inspect ↗
+              </span>
+            </div>
+
+            <!-- Bottom Product Caption -->
+            <div class="mt-6 flex items-end justify-between">
+              <div>
+                <h2 class="font-serif text-2xl text-obsidian">Solstice Emerald Solitaire</h2>
+                <p class="text-xs text-stone-500 mt-1">1.80 ct VVS1 Diamond • Hand-burnished band</p>
+              </div>
+              <div class="text-right">
+                <span class="font-serif text-2xl text-obsidian">$4,250</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 3. CURATED PRODUCTS SHOWCASE ('THE COLLECTION')                     -->
+    <!-- =================================================================== -->
+    <section id="collections" class="py-24 lg:py-32 bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        
+        <!-- Section Header & Category Filter Pills -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-stone-200/70 reveal-up">
+          <div>
+            <span class="text-[11px] tracking-[0.28em] uppercase text-champagne font-semibold">Curated Pieces</span>
+            <h2 class="font-serif text-4xl sm:text-5xl font-light text-obsidian mt-3">The Signature Collection</h2>
+          </div>
+
+          <!-- Interactive Category Filter Pills -->
+          <div id="category-filters" class="flex flex-wrap items-center gap-2.5">
+            <button onclick="filterProducts('All')" data-category="All" class="filter-pill active px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase font-medium transition-all duration-300 bg-obsidian text-white shadow-sm magnetic-target">
+              All Pieces
+            </button>
+            <button onclick="filterProducts('Rings')" data-category="Rings" class="filter-pill px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase font-medium transition-all duration-300 bg-ivory text-obsidian/80 hover:bg-champagne/15 magnetic-target">
+              Rings
+            </button>
+            <button onclick="filterProducts('Necklaces')" data-category="Necklaces" class="filter-pill px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase font-medium transition-all duration-300 bg-ivory text-obsidian/80 hover:bg-champagne/15 magnetic-target">
+              Necklaces
+            </button>
+            <button onclick="filterProducts('Earrings')" data-category="Earrings" class="filter-pill px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase font-medium transition-all duration-300 bg-ivory text-obsidian/80 hover:bg-champagne/15 magnetic-target">
+              Earrings
+            </button>
+            <button onclick="filterProducts('Bracelets')" data-category="Bracelets" class="filter-pill px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase font-medium transition-all duration-300 bg-ivory text-obsidian/80 hover:bg-champagne/15 magnetic-target">
+              Bracelets
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Grid (Rendered Dynamically with Rich SVG Art & Tilt Cards) -->
+        <div id="products-grid" class="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Populated via JavaScript -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 4. ABOUT THE BUSINESS ('THE ATELIER & CRAFT')                       -->
+    <!-- =================================================================== -->
+    <section id="atelier" class="py-24 lg:py-32 bg-ivory/70 border-y border-stone-200/70 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
+          
+          <!-- Left Editorial Craft Illustration & Heritage Card -->
+          <div class="lg:col-span-5 reveal-scale">
+            <div class="relative rounded-[2rem] bg-white p-8 sm:p-10 border border-stone-200/80 shadow-editorial">
+              <div class="aspect-[4/5] rounded-2xl bg-gradient-to-b from-alabaster to-ivory flex flex-col items-center justify-center p-8 text-center border border-stone-100 relative overflow-hidden">
+                <!-- Architectural Compass & Diamond Proportions Line Art -->
+                <svg class="w-56 h-56 text-champagne mb-6" viewBox="0 0 220 220" fill="none" stroke="currentColor" stroke-width="1">
+                  <circle cx="110" cy="110" r="92" stroke-opacity="0.35" />
+                  <circle cx="110" cy="110" r="68" stroke-dasharray="3 4" />
+                  <polygon points="110,24 185,110 110,196 35,110" />
+                  <polygon points="62,62 158,62 158,158 62,158" stroke-opacity="0.45" />
+                  <circle cx="110" cy="110" r="14" fill="#C5A059" fill-opacity="0.15" />
+                  <line x1="110" y1="10" x2="110" y2="210" stroke-opacity="0.3" />
+                  <line x1="10" y1="110" x2="210" y2="110" stroke-opacity="0.3" />
+                </svg>
+                <p class="font-serif italic text-2xl text-obsidian">“True luxury whispers through proportion, balance, and human touch.”</p>
+                <span class="text-[10px] tracking-[0.25em] uppercase text-stone-500 mt-4">— Élodie Laurent, Master Goldsmith</span>
+              </div>
+
+              <!-- Floating Heritage Badge -->
+              <div class="mt-6 flex items-center justify-between text-xs text-stone-500 px-2">
+                <span>Est. 1998 • Place Vendôme & Kala Ghoda</span>
+                <span class="text-champagne font-medium">RJC Certified</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Storytelling & Interactive Craftsmanship Pillars -->
+          <div class="lg:col-span-7 space-y-8 reveal-up">
+            <div>
+              <span class="text-[11px] tracking-[0.28em] uppercase text-champagne font-semibold">The Atelier & Heritage</span>
+              <h2 class="font-serif text-4xl sm:text-5xl font-light text-obsidian mt-3 leading-tight">
+                Where Architectural Rigor Meets <span class="italic">Timeless</span> Goldsmithing.
+              </h2>
+            </div>
+
+            <p class="text-stone-600 leading-relaxed font-light text-base sm:text-lg">
+              Founded as an intimate high-jewellery studio, <strong class="font-medium text-obsidian">AURELIA ATELIER</strong> rejects mass casting in favor of hand-forged metalwork. Every curve is drawn by hand, wax-carved under magnification, and micro-pavé set by master artisans dedicating up to 140 hours to a single creation.
+            </p>
+
+            <!-- Interactive Craftsmanship Pillar Tabs -->
+            <div class="pt-2">
+              <div class="flex flex-wrap gap-2 border-b border-stone-200 pb-4" id="pillar-tabs">
+                <button onclick="selectCraftPillar(0)" class="pillar-tab active px-4 py-2 rounded-full text-xs tracking-[0.15em] uppercase font-medium bg-obsidian text-white transition-all magnetic-target">
+                  01. Ethical Provenance
+                </button>
+                <button onclick="selectCraftPillar(1)" class="pillar-tab px-4 py-2 rounded-full text-xs tracking-[0.15em] uppercase font-medium bg-white text-obsidian/75 hover:text-obsidian border border-stone-200 transition-all magnetic-target">
+                  02. Hand-Forged 18k Gold
+                </button>
+                <button onclick="selectCraftPillar(2)" class="pillar-tab px-4 py-2 rounded-full text-xs tracking-[0.15em] uppercase font-medium bg-white text-obsidian/75 hover:text-obsidian border border-stone-200 transition-all magnetic-target">
+                  03. Bespoke Commissions
+                </button>
+              </div>
+
+              <!-- Dynamic Pillar Description Panel -->
+              <div id="pillar-content" class="mt-6 p-6 sm:p-8 rounded-2xl bg-white border border-stone-200/80 shadow-sm transition-all">
+                <h3 class="font-serif text-2xl text-obsidian">100% Traceable, Conflict-Free Gemstones</h3>
+                <p class="text-sm text-stone-600 leading-relaxed mt-2">
+                  Every diamond and precious sapphire is accompanied by a full origin dossier and GIA certification. We partner exclusively with single-mine, carbon-neutral lapidaries to guarantee ethical integrity from earth to heirloom.
+                </p>
+              </div>
+            </div>
+
+            <!-- Key Atelier Metrics -->
+            <div class="grid grid-cols-3 gap-6 pt-4">
+              <div class="p-5 rounded-2xl bg-white/90 border border-stone-200/60">
+                <p class="font-serif text-3xl text-champagne">140+</p>
+                <p class="text-xs text-obsidian font-medium mt-1">Artisan Hours</p>
+                <p class="text-[11px] text-stone-500 mt-0.5">Per haute piece</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-white/90 border border-stone-200/60">
+                <p class="font-serif text-3xl text-champagne">100%</p>
+                <p class="text-xs text-obsidian font-medium mt-1">Recycled Gold</p>
+                <p class="text-[11px] text-stone-500 mt-0.5">18k & Platinum 950</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-white/90 border border-stone-200/60">
+                <p class="font-serif text-3xl text-champagne">Lifetime</p>
+                <p class="text-xs text-obsidian font-medium mt-1">Atelier Care</p>
+                <p class="text-[11px] text-stone-500 mt-0.5">Complimentary spa</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 5. CONTACT & PRIVATE BESPOKE CONSULTATION SECTION                   -->
+    <!-- =================================================================== -->
+    <section id="contact" class="py-24 lg:py-32 bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-14">
+          
+          <!-- Left Boutique Atelier Details -->
+          <div class="lg:col-span-5 space-y-8 reveal-up">
+            <div>
+              <span class="text-[11px] tracking-[0.28em] uppercase text-champagne font-semibold">Private Concierge</span>
+              <h2 class="font-serif text-4xl sm:text-5xl font-light text-obsidian mt-3">Visit Our Salon or Commission a Piece</h2>
+              <p class="text-stone-600 font-light mt-4 leading-relaxed">
+                Whether selecting an engagement solitaire or reimagining a family heirloom, our senior gemologists welcome you for private in-salon or virtual consultations.
+              </p>
+            </div>
+
+            <div class="space-y-6 pt-4 border-t border-stone-200/70">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-ivory flex items-center justify-center text-champagne shrink-0 border border-champagne/25">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21c4.5-4.5 7-8 7-11.5a7 7 0 10-14 0C5 13 7.5 16.5 12 21z" />
+                    <circle cx="12" cy="9.5" r="2.5" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xs tracking-[0.18em] uppercase font-semibold text-obsidian">Flagship Salons</h3>
+                  <p class="text-sm text-stone-600 mt-1">14 Rue de la Paix, 75002 Paris</p>
+                  <p class="text-sm text-stone-600">28 Rampart Row, Kala Ghoda, Mumbai</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-ivory flex items-center justify-center text-champagne shrink-0 border border-champagne/25">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9" />
+                    <path stroke-linecap="round" d="M12 7v5l3 2" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xs tracking-[0.18em] uppercase font-semibold text-obsidian">Private Viewing Hours</h3>
+                  <p class="text-sm text-stone-600 mt-1">Tuesday – Saturday: 11:00 AM – 7:30 PM</p>
+                  <p class="text-sm text-stone-500">Sunday & Monday by private appointment</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-ivory flex items-center justify-center text-champagne shrink-0 border border-champagne/25">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xs tracking-[0.18em] uppercase font-semibold text-obsidian">Direct Concierge</h3>
+                  <p class="text-sm text-stone-600 mt-1">concierge@aurelia-atelier.com</p>
+                  <p class="text-sm text-stone-600">+33 1 42 68 55 00 • +91 22 2267 8900</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Interactive Bespoke Consultation Form -->
+          <div class="lg:col-span-7 reveal-up" style="transition-delay: 150ms;">
+            <div class="rounded-[2rem] bg-alabaster p-8 sm:p-11 border border-stone-200/80 shadow-editorial">
+              <form id="bespoke-contact-form" onsubmit="handleContactSubmit(event)" class="space-y-6">
+                
+                <!-- Service Selector Pills -->
+                <div>
+                  <label class="block text-[11px] tracking-[0.2em] uppercase font-semibold text-obsidian mb-3">Select Consultation Type</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="service-options">
+                    <button type="button" onclick="selectInquiryService(this, 'Custom Engagement Ring')" class="service-btn active text-left px-4 py-3 rounded-xl border border-obsidian bg-obsidian text-white text-xs font-medium tracking-wide transition-all">
+                      ✦ Custom Engagement Ring
+                    </button>
+                    <button type="button" onclick="selectInquiryService(this, 'Heirloom Redesign')" class="service-btn text-left px-4 py-3 rounded-xl border border-stone-200 bg-white text-obsidian/80 hover:border-champagne text-xs font-medium tracking-wide transition-all">
+                      ◈ Heirloom Redesign
+                    </button>
+                    <button type="button" onclick="selectInquiryService(this, 'Private Salon Viewing')" class="service-btn text-left px-4 py-3 rounded-xl border border-stone-200 bg-white text-obsidian/80 hover:border-champagne text-xs font-medium tracking-wide transition-all">
+                      ❖ Private Salon Viewing
+                    </button>
+                    <button type="button" onclick="selectInquiryService(this, 'General Concierge Inquiry')" class="service-btn text-left px-4 py-3 rounded-xl border border-stone-200 bg-white text-obsidian/80 hover:border-champagne text-xs font-medium tracking-wide transition-all">
+                      ✧ General Concierge Inquiry
+                    </button>
+                  </div>
+                  <input type="hidden" id="selected-service" value="Custom Engagement Ring" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-2">Full Name *</label>
+                    <input type="text" id="contact-name" required placeholder="Camille Moreau" class="w-full px-4 py-3.5 rounded-xl bg-white border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne transition-colors" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-2">Email Address *</label>
+                    <input type="email" id="contact-email" required placeholder="camille@domain.com" class="w-full px-4 py-3.5 rounded-xl bg-white border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne transition-colors" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-2">Preferred Date</label>
+                    <input type="date" id="contact-date" class="w-full px-4 py-3.5 rounded-xl bg-white border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne transition-colors" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-2">Preferred Metal</label>
+                    <select id="contact-metal" class="w-full px-4 py-3.5 rounded-xl bg-white border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne transition-colors">
+                      <option>18k Champagne Gold</option>
+                      <option>Platinum 950</option>
+                      <option>18k Rose Gold</option>
+                      <option>18k Yellow Gold</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-2">Design Notes or Stone Preferences *</label>
+                  <textarea id="contact-message" rows="3" required placeholder="Tell us about your vision, desired diamond cut, or occasion..." class="w-full px-4 py-3.5 rounded-xl bg-white border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne transition-colors"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.22em] uppercase font-medium hover:bg-champagne transition-all duration-300 shadow-editorial magnetic-target" data-cursor="SEND">
+                  Request Private Consultation
+                </button>
+              </form>
+
+              <!-- Refined Confirmation Banner (Hidden until submit) -->
+              <div id="contact-confirmation" class="hidden text-center py-10 space-y-4">
+                <div class="w-14 h-14 rounded-full bg-champagne/15 text-champagne flex items-center justify-center mx-auto border border-champagne/40">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 class="font-serif text-3xl text-obsidian">Dossier Received by Our Salon</h3>
+                <p id="contact-confirm-text" class="text-sm text-stone-600 max-w-md mx-auto leading-relaxed"></p>
+                <button onclick="resetContactForm()" class="mt-4 px-6 py-2.5 rounded-full border border-stone-300 text-xs tracking-[0.18em] uppercase hover:border-obsidian transition-colors">
+                  Send Another Inquiry
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 6. DEDICATED CHECKOUT & PAYMENT PAGE VIEW                             -->
+  <!-- ===================================================================== -->
+  <section id="checkout-view" class="hidden relative z-10 pt-28 pb-24 min-h-screen bg-alabaster">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      
+      <!-- Top Breadcrumb & Back to Boutique -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-stone-200/80">
+        <div>
+          <button onclick="switchView('landing')" class="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-stone-500 hover:text-obsidian transition-colors mb-2 magnetic-target">
+            <span>← Return to Atelier</span>
+          </button>
+          <h1 class="font-serif text-4xl sm:text-5xl font-light text-obsidian">Private Acquisition & Payment</h1>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-stone-500 bg-white px-4 py-2 rounded-full border border-stone-200/80">
+          <svg class="w-4 h-4 text-champagne" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+            <rect x="5" y="11" width="14" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 018 0v4" />
+          </svg>
+          <span>256-Bit Encrypted & Insured Armored Courier</span>
+        </div>
+      </div>
+
+      <!-- Checkout Grid (Form + Payment on Left, Order Summary on Right) -->
+      <div id="checkout-workspace" class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left 7 Columns: Shipping + Interactive Payment Module -->
+        <div class="lg:col-span-7 space-y-8">
+          
+          <!-- Step 1: Insured Delivery Details -->
+          <div class="bg-white rounded-[2rem] p-7 sm:p-9 border border-stone-200/80 shadow-sm space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 class="font-serif text-2xl text-obsidian">1. Insured Client Delivery</h2>
+              <span class="text-[10px] tracking-[0.2em] uppercase text-champagne font-semibold">Complimentary Brinks Express</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Recipient Name *</label>
+                <input type="text" id="ship-name" value="Aarav Mehta" oninput="syncCardHolder(this.value)" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+              </div>
+              <div>
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Email for GIA Certificate *</label>
+                <input type="email" id="ship-email" value="aarav.mehta@atelierclient.com" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Street Address & Residence *</label>
+              <input type="text" id="ship-address" value="18 Altamount Road, Suite 12B" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">City *</label>
+                <input type="text" id="ship-city" value="Mumbai" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+              </div>
+              <div>
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Postal Code *</label>
+                <input type="text" id="ship-zip" value="400026" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+              </div>
+              <div class="col-span-2 sm:col-span-1">
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Country</label>
+                <select id="ship-country" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne">
+                  <option>India</option>
+                  <option>France</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Switzerland</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Interactive Payment Gateway -->
+          <div class="bg-white rounded-[2rem] p-7 sm:p-9 border border-stone-200/80 shadow-sm space-y-6">
+            <h2 class="font-serif text-2xl text-obsidian">2. Settlement & Payment Method</h2>
+
+            <!-- Payment Method Selector Tabs -->
+            <div class="grid grid-cols-3 gap-3">
+              <button type="button" onclick="selectPaymentMethod('card')" id="pay-tab-card" class="pay-method-tab py-3 px-4 rounded-xl border border-obsidian bg-obsidian text-white text-xs tracking-[0.14em] uppercase font-medium transition-all">
+                Credit / Debit Card
+              </button>
+              <button type="button" onclick="selectPaymentMethod('upi')" id="pay-tab-upi" class="pay-method-tab py-3 px-4 rounded-xl border border-stone-200 bg-alabaster text-obsidian/80 hover:border-champagne text-xs tracking-[0.14em] uppercase font-medium transition-all">
+                UPI / Instant
+              </button>
+              <button type="button" onclick="selectPaymentMethod('wire')" id="pay-tab-wire" class="pay-method-tab py-3 px-4 rounded-xl border border-stone-200 bg-alabaster text-obsidian/80 hover:border-champagne text-xs tracking-[0.14em] uppercase font-medium transition-all">
+                Private Wire
+              </button>
+            </div>
+
+            <!-- Panel A: Credit Card with Live 3D Metallic Preview -->
+            <div id="pay-panel-card" class="space-y-6 pt-2">
+              
+              <!-- Live Interactive Metallic Card Preview -->
+              <div class="credit-card-surface rounded-2xl p-6 sm:p-7 max-w-md mx-auto transition-transform duration-500 hover:scale-[1.01]">
+                <div class="flex items-center justify-between">
+                  <span class="font-serif text-lg tracking-[0.22em] text-obsidian font-semibold">AURELIA PRIVÉ</span>
+                  <!-- EMV Gold Chip -->
+                  <div class="w-10 h-7 rounded-md bg-gradient-to-br from-[#D8B979] to-[#A6833E] border border-amber-700/30 flex items-center justify-center">
+                    <div class="w-6 h-4 border border-obsidian/20 rounded-xs"></div>
+                  </div>
+                </div>
+
+                <div class="my-7">
+                  <p id="preview-card-number" class="font-mono text-lg sm:text-xl tracking-[0.22em] text-obsidian">4532 •••• •••• 8894</p>
+                </div>
+
+                <div class="flex items-end justify-between text-xs">
+                  <div>
+                    <span class="block text-[9px] tracking-[0.2em] uppercase text-stone-500">Cardholder</span>
+                    <span id="preview-card-name" class="font-medium tracking-[0.14em] uppercase text-obsidian mt-0.5 block">AARAV MEHTA</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="block text-[9px] tracking-[0.2em] uppercase text-stone-500">Valid Thru</span>
+                    <span id="preview-card-expiry" class="font-mono font-medium text-obsidian mt-0.5 block">09/29</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Input Fields -->
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Name on Card</label>
+                  <input type="text" id="card-holder-input" value="AARAV MEHTA" oninput="updateCardPreview()" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian uppercase focus:outline-none focus:border-champagne" />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Card Number</label>
+                  <input type="text" id="card-number-input" maxlength="19" placeholder="4532 8910 4421 8894" oninput="formatAndPreviewCardNumber(this)" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm font-mono text-obsidian focus:outline-none focus:border-champagne" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Expiry (MM/YY)</label>
+                    <input type="text" id="card-expiry-input" maxlength="5" placeholder="09/29" oninput="formatAndPreviewExpiry(this)" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm font-mono text-obsidian focus:outline-none focus:border-champagne" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">Security CVV</label>
+                    <input type="password" id="card-cvv-input" maxlength="4" placeholder="•••" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm font-mono text-obsidian focus:outline-none focus:border-champagne" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel B: UPI / Instant Transfer -->
+            <div id="pay-panel-upi" class="hidden space-y-5 pt-2">
+              <div class="p-6 rounded-2xl bg-alabaster border border-stone-200/80 flex flex-col sm:flex-row items-center gap-6">
+                <!-- Minimalist Stylized QR Graphic -->
+                <div class="w-28 h-28 rounded-xl bg-white p-3 border border-champagne/40 shrink-0 flex items-center justify-center">
+                  <svg class="w-full h-full text-obsidian" viewBox="0 0 64 64" fill="currentColor">
+                    <rect x="4" y="4" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4" />
+                    <rect x="10" y="10" width="6" height="6" />
+                    <rect x="42" y="4" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4" />
+                    <rect x="48" y="10" width="6" height="6" />
+                    <rect x="4" y="42" width="18" height="18" fill="none" stroke="currentColor" stroke-width="4" />
+                    <rect x="10" y="48" width="6" height="6" />
+                    <rect x="28" y="8" width="6" height="6" />
+                    <rect x="28" y="26" width="8" height="8" fill="#C5A059" />
+                    <rect x="42" y="30" width="6" height="14" />
+                    <rect x="28" y="46" width="16" height="6" />
+                    <rect x="50" y="50" width="10" height="10" />
+                  </svg>
+                </div>
+                <div class="space-y-2 text-center sm:text-left">
+                  <span class="text-[10px] tracking-[0.2em] uppercase text-champagne font-semibold">Instant Verified Settlement</span>
+                  <h4 class="font-serif text-xl text-obsidian">Scan QR or Enter Virtual Payment Address</h4>
+                  <p class="text-xs text-stone-500">Supports all global UPI & instant bank clearing apps with zero surcharge.</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] tracking-[0.16em] uppercase text-stone-500 mb-1.5">UPI ID / VPA</label>
+                <input type="text" id="upi-id-input" placeholder="aarav.mehta@okicici" class="w-full px-4 py-3 rounded-xl bg-alabaster border border-stone-200 text-sm text-obsidian focus:outline-none focus:border-champagne" />
+              </div>
+            </div>
+
+            <!-- Panel C: Private Bank Wire -->
+            <div id="pay-panel-wire" class="hidden space-y-4 pt-2">
+              <div class="p-6 rounded-2xl bg-alabaster border border-stone-200/80 space-y-3 text-sm">
+                <div class="flex justify-between border-b border-stone-200/70 pb-2">
+                  <span class="text-stone-500">Beneficiary</span>
+                  <span class="font-medium text-obsidian">AURELIA ATELIER HAUTE JOAILLERIE</span>
+                </div>
+                <div class="flex justify-between border-b border-stone-200/70 pb-2">
+                  <span class="text-stone-500">Bank Institution</span>
+                  <span class="font-medium text-obsidian">Banque Privée de Genève / HSBC Private</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-stone-500">SWIFT / BIC Reference</span>
+                  <span class="font-mono text-obsidian">AUREFRPPXXX</span>
+                </div>
+              </div>
+              <p class="text-xs text-stone-500">Your selected pieces are reserved for 48 hours upon wire initiation.</p>
+            </div>
+
+            <!-- Complete Payment Action Button -->
+            <button id="complete-payment-btn" onclick="processPayment()" class="w-full py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.22em] uppercase font-medium hover:bg-champagne transition-all duration-300 shadow-editorial flex items-center justify-center gap-3 magnetic-target">
+              <span>Authorize & Complete Acquisition</span>
+              <span id="checkout-btn-total" class="font-serif text-base">$6,150</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right 5 Columns: Itemized Bag Summary & Promo Code -->
+        <div class="lg:col-span-5">
+          <div class="bg-white rounded-[2rem] p-7 sm:p-9 border border-stone-200/80 shadow-editorial sticky top-28 space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-200/70 pb-4">
+              <h2 class="font-serif text-2xl text-obsidian">Atelier Dossier Summary</h2>
+              <span id="checkout-item-count" class="text-xs text-stone-500">2 Pieces</span>
+            </div>
+
+            <!-- Itemized List -->
+            <div id="checkout-items-list" class="space-y-4 max-h-80 overflow-y-auto pr-1">
+              <!-- Populated dynamically -->
+            </div>
+
+            <!-- Complimentary Gift Packaging Toggle -->
+            <label class="flex items-center justify-between p-4 rounded-2xl bg-ivory/70 border border-champagne/25 cursor-pointer">
+              <div>
+                <span class="text-xs font-medium text-obsidian block">Signature Lacquered Trunk & Wax Seal</span>
+                <span class="text-[11px] text-stone-500">Includes handwritten calligraphy note</span>
+              </div>
+              <input type="checkbox" checked class="w-4 h-4 accent-[#C5A059]" />
+            </label>
+
+            <!-- Promo Code Input -->
+            <div class="flex gap-2">
+              <input type="text" id="promo-code-input" placeholder="Privilege code (try AURELIA10)" class="flex-1 px-4 py-2.5 rounded-full bg-alabaster border border-stone-200 text-xs text-obsidian focus:outline-none focus:border-champagne" />
+              <button type="button" onclick="applyPromoCode()" class="px-5 py-2.5 rounded-full border border-obsidian text-xs tracking-[0.15em] uppercase font-medium hover:bg-obsidian hover:text-white transition-colors">
+                Apply
+              </button>
+            </div>
+            <p id="promo-feedback" class="hidden text-xs text-champagne font-medium"></p>
+
+            <!-- Totals Breakdown -->
+            <div class="space-y-2.5 pt-4 border-t border-stone-200/80 text-sm">
+              <div class="flex justify-between text-stone-600">
+                <span>Subtotal</span>
+                <span id="checkout-subtotal">$6,150</span>
+              </div>
+              <div id="discount-row" class="hidden flex justify-between text-champagne font-medium">
+                <span>Atelier Privilege (10%)</span>
+                <span id="checkout-discount">-$0</span>
+              </div>
+              <div class="flex justify-between text-stone-600">
+                <span>Insured Armored Delivery</span>
+                <span class="text-obsidian font-medium">Complimentary</span>
+              </div>
+              <div class="flex justify-between items-baseline pt-3 border-t border-stone-200/80">
+                <span class="text-xs tracking-[0.2em] uppercase font-semibold text-obsidian">Total Due</span>
+                <span id="checkout-grand-total" class="font-serif text-3xl text-obsidian">$6,150</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Digital Receipt Confirmation State (Displayed after Payment) -->
+      <div id="payment-receipt-view" class="hidden max-w-2xl mx-auto mt-12 bg-white rounded-[2rem] p-8 sm:p-12 border border-champagne/40 shadow-editorial text-center space-y-6">
+        <div class="w-16 h-16 rounded-full bg-champagne/15 text-champagne flex items-center justify-center mx-auto border border-champagne/40">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-[0.28em] uppercase text-champagne font-semibold">Acquisition Confirmed</span>
+        <h2 class="font-serif text-4xl text-obsidian">Thank You for Your Patronage</h2>
+        <p class="text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
+          Your bespoke pieces are now being prepared by our master goldsmiths with your GIA dossiers and Certificate of Authenticity.
+        </p>
+
+        <div class="p-6 rounded-2xl bg-alabaster border border-stone-200/80 text-left space-y-3 text-xs">
+          <div class="flex justify-between">
+            <span class="text-stone-500 uppercase tracking-wider">Dossier Reference</span>
+            <span id="receipt-order-id" class="font-mono font-semibold text-obsidian">AUR-2026-8841</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500 uppercase tracking-wider">Client</span>
+            <span id="receipt-client-name" class="font-medium text-obsidian">Aarav Mehta</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500 uppercase tracking-wider">Settlement Total</span>
+            <span id="receipt-total-paid" class="font-serif text-lg text-obsidian">$6,150</span>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button onclick="finishOrderAndReturn()" class="px-8 py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.2em] uppercase font-medium hover:bg-champagne transition-colors">
+            Return to Aurelia Atelier
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- EDITORIAL FOOTER                                                      -->
+  <!-- ===================================================================== -->
+  <footer class="relative z-10 bg-white border-t border-stone-200/80 py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div class="text-center md:text-left">
+        <span class="font-serif text-2xl tracking-[0.22em] text-obsidian">AURELIA ATELIER</span>
+        <p class="text-xs text-stone-500 mt-1">Haute Joaillerie • Paris • Mumbai • Geneva</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-8 text-[11px] tracking-[0.2em] uppercase text-stone-500">
+        <a href="#collections" onclick="switchView('landing')" class="hover:text-obsidian transition-colors">Collections</a>
+        <a href="#atelier" onclick="switchView('landing')" class="hover:text-obsidian transition-colors">Savoir-Faire</a>
+        <a href="#contact" onclick="switchView('landing')" class="hover:text-obsidian transition-colors">Salons</a>
+        <button onclick="switchView('checkout')" class="hover:text-obsidian transition-colors">Checkout</button>
+      </div>
+
+      <p class="text-xs text-stone-400">© 2026 Aurelia Atelier. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- QUICK-VIEW PRODUCT MODAL (GLASSMORPHISM)                              -->
+  <!-- ===================================================================== -->
+  <div id="quickview-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-obsidian/40 backdrop-blur-sm">
+    <div class="relative w-full max-w-3xl rounded-[2rem] bg-white border border-stone-200 shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 animate-fadeIn">
+      <!-- Close Button -->
+      <button onclick="closeQuickView()" aria-label="Close modal" class="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-white/90 border border-stone-200 flex items-center justify-center text-obsidian hover:border-obsidian transition-colors">
+        ✕
+      </button>
+
+      <!-- Left Artwork Showcase -->
+      <div id="qv-artwork" class="bg-gradient-to-br from-ivory via-[#FAF8F5] to-[#EFECE6] p-10 flex items-center justify-center min-h-[280px]">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Right Specifications -->
+      <div class="p-8 sm:p-10 flex flex-col justify-between space-y-6">
+        <div class="space-y-3">
+          <span id="qv-metal" class="text-[10px] tracking-[0.24em] uppercase text-champagne font-semibold">18K CHAMPAGNE GOLD</span>
+          <h3 id="qv-title" class="font-serif text-3xl text-obsidian">Piece Title</h3>
+          <p id="qv-price" class="font-serif text-2xl text-obsidian">$4,250</p>
+          <p id="qv-desc" class="text-sm text-stone-600 leading-relaxed pt-2">Description</p>
+
+          <div class="pt-4 border-t border-stone-200/70 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-stone-400 uppercase tracking-wider">Gemstone</span>
+              <span id="qv-stone" class="text-obsidian font-medium">1.80 ct VVS1</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-400 uppercase tracking-wider">Dimensions</span>
+              <span id="qv-dims" class="text-obsidian font-medium">2.1 mm Band</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-400 uppercase tracking-wider">Certification</span>
+              <span class="text-obsidian font-medium">GIA & RJC Hallmarked</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="qv-add-btn" class="w-full py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.2em] uppercase font-medium hover:bg-champagne transition-colors">
+          Add to Shopping Bag
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE-OVER SHOPPING BAG DRAWER                                        -->
+  <!-- ===================================================================== -->
+  <div id="cart-drawer-backdrop" onclick="closeCartDrawer()" class="fixed inset-0 z-50 hidden bg-obsidian/35 backdrop-blur-xs transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-white border-l border-stone-200 shadow-2xl transform translate-x-full transition-transform duration-500 ease-out flex flex-col">
+    
+    <!-- Drawer Header -->
+    <div class="px-7 py-6 border-b border-stone-200/80 flex items-center justify-between">
+      <div>
+        <h3 class="font-serif text-2xl text-obsidian">Your Atelier Bag</h3>
+        <p class="text-[11px] tracking-[0.16em] uppercase text-stone-400 mt-0.5">Complimentary Insured Shipping</p>
+      </div>
+      <button onclick="closeCartDrawer()" class="w-9 h-9 rounded-full border border-stone-200 flex items-center justify-center text-obsidian hover:border-obsidian">
+        ✕
+      </button>
+    </div>
+
+    <!-- Drawer Items List -->
+    <div id="drawer-items-list" class="flex-1 overflow-y-auto p-7 space-y-5">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-7 border-t border-stone-200/80 bg-alabaster space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="text-xs tracking-[0.2em] uppercase text-stone-500">Estimated Total</span>
+        <span id="drawer-subtotal" class="font-serif text-2xl text-obsidian">$6,150</span>
+      </div>
+      <button onclick="proceedToCheckoutFromDrawer()" class="w-full py-4 rounded-full bg-obsidian text-white text-xs tracking-[0.22em] uppercase font-medium hover:bg-champagne transition-all shadow-editorial">
+        Proceed to Payment →
+      </button>
+    </div>
+  </aside>
+
+  <!-- Floating Toast Notification -->
+  <div id="atelier-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
+    <div class="px-6 py-3 rounded-full bg-obsidian text-white text-xs tracking-[0.16em] uppercase shadow-xl border border-champagne/40 flex items-center gap-2.5">
+      <span class="w-2 h-2 rounded-full bg-champagne"></span>
+      <span id="toast-message">Added to Atelier Bag</span>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: INTERACTIVE CATALOG, CUSTOM CURSOR, SCROLL & CHECKOUT     -->
+  <!-- ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. CURATED JEWELLERY CATALOG DATA (WITH BESPOKE SVG ARTWORK)
+    // -----------------------------------------------------------------------
+    const PRODUCTS = [
+      {
+        id: 1,
+        name: "Solstice Emerald Solitaire",
+        category: "Rings",
+        metal: "18k Champagne Gold",
+        price: 4250,
+        stone: "1.80 ct VVS1 Emerald-Cut Diamond",
+        dims: "Band width 2.0 mm • Cathedral setting",
+        description: "An architectural solitaire featuring an emerald-cut diamond suspended in four hand-burnished champagne gold prongs.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(166,131,62,0.22)]" viewBox="0 0 220 220" fill="none">
+          <circle cx="110" cy="126" r="54" stroke="#C5A059" stroke-width="10"/>
+          <circle cx="110" cy="126" r="49" stroke="#FFFDF8" stroke-opacity="0.7" stroke-width="1"/>
+          <polygon points="96,42 124,42 133,55 110,74 87,55" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.2"/>
+          <polygon points="101,47 119,47 125,55 110,67 95,55" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+        </svg>`
+      },
+      {
+        id: 2,
+        name: "Lumière Pavé Collar",
+        category: "Necklaces",
+        metal: "18k Champagne Gold",
+        price: 3800,
+        stone: "1.15 ctw Micro-Pavé Brilliants",
+        dims: "16–18 in adjustable • Articulated links",
+        description: "Fluidly articulated gold links trace the collarbone, culminating in a suspended geometric diamond bar.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(166,131,62,0.22)]" viewBox="0 0 220 220" fill="none">
+          <path d="M45 55 C55 135, 165 135, 175 55" stroke="#C5A059" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M52 58 C62 128, 158 128, 168 58" stroke="#E5C98B" stroke-width="1.2" stroke-dasharray="2 3"/>
+          <rect x="86" y="114" width="48" height="8" rx="4" fill="#F8FAFC" stroke="#C5A059" stroke-width="1.5"/>
+          <circle cx="110" cy="136" r="6" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2"/>
+        </svg>`
+      },
+      {
+        id: 3,
+        name: "Vespera Drop Earrings",
+        category: "Earrings",
+        metal: "Platinum 950",
+        price: 2950,
+        stone: "1.40 ctw Pear & Marquise Diamonds",
+        dims: "34 mm drop length • French post",
+        description: "Luminous pear-cut diamonds suspended below marquise studs in pure Platinum 950 for effortless evening movement.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(100,116,139,0.22)]" viewBox="0 0 220 220" fill="none">
+          <g transform="translate(-26,0)">
+            <polygon points="110,55 117,68 110,81 103,68" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.2"/>
+            <line x1="110" y1="81" x2="110" y2="104" stroke="#CBD5E1" stroke-width="1.5"/>
+            <path d="M110 104 C122 122, 122 142, 110 150 C98 142, 98 122, 110 104 Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.3"/>
+          </g>
+          <g transform="translate(26,0)">
+            <polygon points="110,65 117,78 110,91 103,78" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.2"/>
+            <line x1="110" y1="91" x2="110" y2="114" stroke="#CBD5E1" stroke-width="1.5"/>
+            <path d="M110 114 C122 132, 122 152, 110 160 C98 152, 98 132, 110 114 Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.3"/>
+          </g>
+        </svg>`
+      },
+      {
+        id: 4,
+        name: "Aurelia Sculpted Cuff",
+        category: "Bracelets",
+        metal: "18k Champagne Gold",
+        price: 3400,
+        stone: "0.65 ctw Baguette Diamonds",
+        dims: "Inner wrist 16.5 cm • Concealed clasp",
+        description: "A hollow-forged oval cuff sculpted to hug the wrist, inlaid with flush-set baguette diamonds along its chamfered edge.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(166,131,62,0.22)]" viewBox="0 0 220 220" fill="none">
+          <ellipse cx="110" cy="112" rx="68" ry="44" stroke="#C5A059" stroke-width="12"/>
+          <ellipse cx="110" cy="112" rx="63" ry="39" stroke="#FFFDF8" stroke-opacity="0.65" stroke-width="1.2"/>
+          <rect x="92" y="151" width="10" height="5" rx="1" fill="#FFFFFF" stroke="#94A3B8" stroke-width="0.8"/>
+          <rect x="105" y="151" width="10" height="5" rx="1" fill="#FFFFFF" stroke="#94A3B8" stroke-width="0.8"/>
+          <rect x="118" y="151" width="10" height="5" rx="1" fill="#FFFFFF" stroke="#94A3B8" stroke-width="0.8"/>
+        </svg>`
+      },
+      {
+        id: 5,
+        name: "Celeste Toi et Moi Ring",
+        category: "Rings",
+        metal: "18k Rose Gold",
+        price: 3650,
+        stone: "1.20 ctw Pear Diamond & Pink Sapphire",
+        dims: "Open bypass shank • 1.8 mm",
+        description: "Two poetic stones—a pear-cut white diamond and a pastel Ceylon sapphire—meet across a delicate rose gold bypass band.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(190,120,110,0.22)]" viewBox="0 0 220 220" fill="none">
+          <path d="M68 95 A52 52 0 1 0 152 95" stroke="#D99B8C" stroke-width="9" stroke-linecap="round"/>
+          <path d="M94 64 C104 78, 104 94, 94 100 C84 94, 84 78, 94 64 Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2"/>
+          <polygon points="126,68 139,82 126,96 113,82" fill="#FCE7F3" stroke="#D99B8C" stroke-width="1.2"/>
+        </svg>`
+      },
+      {
+        id: 6,
+        name: "Étoile Compass Medallion",
+        category: "Necklaces",
+        metal: "18k Champagne Gold",
+        price: 1900,
+        stone: "0.35 ctw Star-Set Diamonds",
+        dims: "18 mm medallion • 20 in chain",
+        description: "Inspired by celestial navigation charts, featuring an engraved eight-point star set with brilliant-cut diamonds.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(166,131,62,0.22)]" viewBox="0 0 220 220" fill="none">
+          <path d="M72 42 L110 88 L148 42" stroke="#C5A059" stroke-width="2.5"/>
+          <circle cx="110" cy="124" r="34" fill="#FAF6EE" stroke="#C5A059" stroke-width="4"/>
+          <path d="M110 98 L114 120 L136 124 L114 128 L110 150 L106 128 L84 124 L106 120 Z" fill="#C5A059"/>
+          <circle cx="110" cy="124" r="4" fill="#FFFFFF"/>
+        </svg>`
+      },
+      {
+        id: 7,
+        name: "Serein Diamond Hoops",
+        category: "Earrings",
+        metal: "18k Champagne Gold",
+        price: 2250,
+        stone: "0.90 ctw Inside-Out Brilliants",
+        dims: "22 mm diameter • Click-top closure",
+        description: "Architectural knife-edge hoops lined inside and out with matched white diamonds for 360-degree radiance.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(166,131,62,0.22)]" viewBox="0 0 220 220" fill="none">
+          <circle cx="92" cy="110" r="36" stroke="#C5A059" stroke-width="7"/>
+          <circle cx="92" cy="110" r="36" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 5"/>
+          <circle cx="132" cy="118" r="36" stroke="#C5A059" stroke-width="7"/>
+          <circle cx="132" cy="118" r="36" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 5"/>
+        </svg>`
+      },
+      {
+        id: 8,
+        name: "Rivière Tennis Bracelet",
+        category: "Bracelets",
+        metal: "Platinum 950",
+        price: 5400,
+        stone: "3.50 ctw Round Brilliant Diamonds",
+        dims: "17 cm length • Double safety clasp",
+        description: "Sixty-two matched F-color VVS diamonds hand-set in whisper-thin four-prong Platinum 950 baskets.",
+        svg: `<svg class="w-44 h-44 drop-shadow-[0_16px_20px_rgba(100,116,139,0.22)]" viewBox="0 0 220 220" fill="none">
+          <ellipse cx="110" cy="112" rx="66" ry="40" stroke="#CBD5E1" stroke-width="3"/>
+          <ellipse cx="110" cy="112" rx="66" ry="40" stroke="#FFFFFF" stroke-width="6" stroke-dasharray="3 6" stroke-linecap="round"/>
+        </svg>`
+      }
+    ];
+
+    // Pre-populate Shopping Bag with 2 signature items so user can inspect immediately
+    let cart = [
+      { ...PRODUCTS[0], qty: 1 },
+      { ...PRODUCTS[5], qty: 1 }
+    ];
+    let activeCategory = 'All';
+    let searchQuery = '';
+    let discountRate = 0;
+
+    // -----------------------------------------------------------------------
+    // 2. RENDER PRODUCTS GRID & FILTERING
+    // -----------------------------------------------------------------------
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      const filtered = PRODUCTS.filter(item => {
+        const matchesCat = activeCategory === 'All' || item.category === activeCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              item.metal.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              item.category.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-16 bg-alabaster rounded-3xl border border-stone-200/70">
+            <p class="font-serif text-2xl text-obsidian">No pieces match your current filter.</p>
+            <button onclick="filterProducts('All'); document.getElementById('global-search-input').value=''; searchQuery=''; renderProducts();" class="mt-4 px-6 py-2.5 rounded-full bg-obsidian text-white text-xs tracking-widest uppercase">
+              Reset Collection View
+            </button>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((product, idx) => `
+        <article class="tilt-card group rounded-[1.75rem] bg-alabaster/70 hover:bg-white p-5 border border-stone-200/80 hover:border-champagne/50 shadow-xs hover:shadow-editorial transition-all duration-500 flex flex-col justify-between reveal-up is-visible" style="transition-delay: ${idx * 60}ms;">
+          <div class="tilt-sheen"></div>
+          
+          <div>
+            <!-- Metal Tag & Quick View Trigger -->
+            <div class="flex items-center justify-between text-[10px] tracking-[0.18em] uppercase text-stone-500 mb-3">
+              <span class="text-champagne font-semibold">${product.metal}</span>
+              <span>${product.category}</span>
+            </div>
+
+            <!-- Interactive Artwork Stage -->
+            <div onclick="openQuickView(${product.id})" data-cursor="INSPECT" class="relative aspect-square rounded-2xl bg-gradient-to-b from-white to-ivory/90 border border-stone-100 flex items-center justify-center overflow-hidden cursor-pointer">
+              <div class="transition-transform duration-700 group-hover:scale-110">
+                ${product.svg}
+              </div>
+              <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-3 px-3.5 py-1 rounded-full bg-white/95 text-[10px] tracking-[0.18em] uppercase font-medium text-obsidian shadow-xs border border-stone-200/80">
+                Quick View
+              </span>
+            </div>
+
+            <!-- Title & Stone Spec -->
+            <div class="mt-5">
+              <h3 onclick="openQuickView(${product.id})" class="font-serif text-2xl text-obsidian group-hover:text-champagne transition-colors cursor-pointer">${product.name}</h3>
+              <p class="text-xs text-stone-500 mt-1 line-clamp-1">${product.stone}</p>
+            </div>
+          </div>
+
+          <!-- Price & Add to Bag Action -->
+          <div class="mt-6 pt-4 border-t border-stone-200/70 flex items-center justify-between">
+            <span class="font-serif text-xl text-obsidian">$${product.price.toLocaleString()}</span>
+            <button onclick="addToCart(${product.id})" data-cursor="ADD" class="px-4 py-2 rounded-full bg-white hover:bg-obsidian text-obsidian hover:text-white border border-stone-300 hover:border-obsidian text-[11px] tracking-[0.16em] uppercase font-medium transition-all duration-300">
+              + Add to Bag
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      attachTiltListeners();
+      attachCursorListeners();
+    }
+
+    function filterProducts(category) {
+      activeCategory = category;
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        if (btn.dataset.category === category) {
+          btn.classList.add('bg-obsidian', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-ivory', 'text-obsidian/80');
+        } else {
+          btn.classList.remove('bg-obsidian', 'text-white', 'shadow-sm');
+          btn.classList.add('bg-ivory', 'text-obsidian/80');
+        }
+      });
+      renderProducts();
+    }
+
+    function handleSearchFilter(val) {
+      searchQuery = val;
+      switchView('landing');
+      renderProducts();
+    }
+
+    function toggleSearchBar() {
+      const drawer = document.getElementById('search-drawer');
+      drawer.classList.toggle('hidden');
+      if (!drawer.classList.contains('hidden')) {
+        document.getElementById('global-search-input').focus();
+      }
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    // -----------------------------------------------------------------------
+    // 3. QUICK-VIEW MODAL LOGIC
+    // -----------------------------------------------------------------------
+    function openQuickView(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      document.getElementById('qv-artwork').innerHTML = `<div class="scale-125">${product.svg}</div>`;
+      document.getElementById('qv-metal').textContent = product.metal;
+      document.getElementById('qv-title').textContent = product.name;
+      document.getElementById('qv-price').textContent = `$${product.price.toLocaleString()}`;
+      document.getElementById('qv-desc').textContent = product.description;
+      document.getElementById('qv-stone').textContent = product.stone;
+      document.getElementById('qv-dims').textContent = product.dims;
+
+      const addBtn = document.getElementById('qv-add-btn');
+      addBtn.onclick = () => {
+        addToCart(product.id);
+        closeQuickView();
+      };
+
+      const modal = document.getElementById('quickview-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeQuickView() {
+      const modal = document.getElementById('quickview-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. SHOPPING BAG & CHECKOUT SYNCHRONIZATION
+    // -----------------------------------------------------------------------
+    function addToCart(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      const existing = cart.find(item => item.id === productId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+
+      updateCartUI();
+      showToast(`${product.name} added to bag`);
+    }
+
+    function updateItemQty(productId, delta) {
+      const idx = cart.findIndex(item => item.id === productId);
+      if (idx === -1) return;
+
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const discount = Math.round(subtotal * discountRate);
+      const grandTotal = subtotal - discount;
+
+      // Update Header Badge
+      const badge = document.getElementById('header-bag-count');
+      badge.textContent = totalItems;
+      badge.classList.add('scale-125');
+      setTimeout(() => badge.classList.remove('scale-125'), 200);
+
+      // Update Slide-over Drawer
+      const drawerList = document.getElementById('drawer-items-list');
+      if (cart.length === 0) {
+        drawerList.innerHTML = `<div class="text-center py-16 text-stone-400 text-sm">Your Atelier Bag is currently empty.</div>`;
+      } else {
+        drawerList.innerHTML = cart.map(item => `
+          <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-alabaster border border-stone-200/70">
+            <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shrink-0 border border-stone-100">
+              <div class="scale-[0.35]">${item.svg}</div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-serif text-lg text-obsidian truncate">${item.name}</h4>
+              <p class="text-[11px] text-stone-500">${item.metal}</p>
+              <div class="flex items-center justify-between mt-2">
+                <div class="inline-flex items-center gap-2.5 px-2.5 py-0.5 rounded-full bg-white border border-stone-200 text-xs">
+                  <button onclick="updateItemQty(${item.id}, -1)" class="text-stone-500 hover:text-obsidian">−</button>
+                  <span class="font-medium text-obsidian">${item.qty}</span>
+                  <button onclick="updateItemQty(${item.id}, 1)" class="text-stone-500 hover:text-obsidian">+</button>
+                </div>
+                <span class="font-serif text-base text-obsidian">$${(item.price * item.qty).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('drawer-subtotal').textContent = `$${subtotal.toLocaleString()}`;
+
+      // Update Dedicated Checkout View Summary
+      const checkoutList = document.getElementById('checkout-items-list');
+      if (cart.length === 0) {
+        checkoutList.innerHTML = `<p class="text-xs text-stone-400 py-4">No pieces selected. Return to the collection to add items.</p>`;
+      } else {
+        checkoutList.innerHTML = cart.map(item => `
+          <div class="flex items-center justify-between gap-3 py-2.5 border-b border-stone-100">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-12 h-12 rounded-xl bg-alabaster flex items-center justify-center shrink-0">
+                <div class="scale-[0.26]">${item.svg}</div>
+              </div>
+              <div class="truncate">
+                <p class="font-serif text-base text-obsidian truncate">${item.name}</p>
+                <p class="text-[11px] text-stone-500">Qty ${item.qty} • ${item.metal}</p>
+              </div>
+            </div>
+            <span class="font-serif text-base text-obsidian shrink-0">$${(item.price * item.qty).toLocaleString()}</span>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('checkout-item-count').textContent = `${totalItems} ${totalItems === 1 ? 'Piece' : 'Pieces'}`;
+      document.getElementById('checkout-subtotal').textContent = `$${subtotal.toLocaleString()}`;
+      document.getElementById('checkout-grand-total').textContent = `$${grandTotal.toLocaleString()}`;
+      document.getElementById('checkout-btn-total').textContent = `$${grandTotal.toLocaleString()}`;
+
+      const discountRow = document.getElementById('discount-row');
+      if (discount > 0) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('checkout-discount').textContent = `-$${discount.toLocaleString()}`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+    }
+
+    function openCartDrawer() {
+      document.getElementById('cart-drawer-backdrop').classList.remove('hidden');
+      document.getElementById('cart-drawer').classList.remove('translate-x-full');
+    }
+
+    function closeCartDrawer() {
+      document.getElementById('cart-drawer-backdrop').classList.add('hidden');
+      document.getElementById('cart-drawer').classList.add('translate-x-full');
+    }
+
+    function proceedToCheckoutFromDrawer() {
+      closeCartDrawer();
+      switchView('checkout');
+    }
+
+    // -----------------------------------------------------------------------
+    // 5. VIEW SWITCHING (LANDING <-> DEDICATED CHECKOUT PAGE)
+    // -----------------------------------------------------------------------
+    function switchView(viewName) {
+      const landing = document.getElementById('landing-view');
+      const checkout = document.getElementById('checkout-view');
+
+      if (viewName === 'checkout') {
+        landing.classList.add('hidden');
+        checkout.classList.remove('hidden');
+        document.getElementById('checkout-workspace').classList.remove('hidden');
+        document.getElementById('payment-receipt-view').classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        checkout.classList.add('hidden');
+        landing.classList.remove('hidden');
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. ATELIER CRAFT PILLARS & BESPOKE CONTACT FORM
+    // -----------------------------------------------------------------------
+    const CRAFT_PILLARS = [
+      {
+        title: "100% Traceable, Conflict-Free Gemstones",
+        desc: "Every diamond and precious sapphire is accompanied by a full origin dossier and GIA certification. We partner exclusively with single-mine, carbon-neutral lapidaries to guarantee ethical integrity from earth to heirloom."
+      },
+      {
+        title: "Hand-Forged Recycled 18k Champagne Gold",
+        desc: "Our signature warm champagne alloy is refined in-house using 100% recycled RJC-certified gold, hand-rolled and hammered for superior density, luster, and lifelong durability."
+      },
+      {
+        title: "Private Bespoke Commissions & Wax Carving",
+        desc: "Collaborate directly with our Paris and Mumbai master goldsmiths through gouache illustrations and 3D wax maquettes before a single gram of gold is cast."
+      }
+    ];
+
+    function selectCraftPillar(index) {
+      document.querySelectorAll('.pillar-tab').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('bg-obsidian', 'text-white');
+          btn.classList.remove('bg-white', 'text-obsidian/75', 'border', 'border-stone-200');
+        } else {
+          btn.classList.remove('bg-obsidian', 'text-white');
+          btn.classList.add('bg-white', 'text-obsidian/75', 'border', 'border-stone-200');
+        }
+      });
+
+      const panel = document.getElementById('pillar-content');
+      panel.innerHTML = `
+        <h3 class="font-serif text-2xl text-obsidian">${CRAFT_PILLARS[index].title}</h3>
+        <p class="text-sm text-stone-600 leading-relaxed mt-2">${CRAFT_PILLARS[index].desc}</p>
+      `;
+    }
+
+    function selectInquiryService(btn, serviceName) {
+      document.getElementById('selected-service').value = serviceName;
+      document.querySelectorAll('.service-btn').forEach(b => {
+        b.classList.remove('border-obsidian', 'bg-obsidian', 'text-white');
+        b.classList.add('border-stone-200', 'bg-white', 'text-obsidian/80');
+      });
+      btn.classList.remove('border-stone-200', 'bg-white', 'text-obsidian/80');
+      btn.classList.add('border-obsidian', 'bg-obsidian', 'text-white');
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      const service = document.getElementById('selected-service').value;
+      const metal = document.getElementById('contact-metal').value;
+
+      document.getElementById('bespoke-contact-form').classList.add('hidden');
+      const confirmBox = document.getElementById('contact-confirmation');
+      confirmBox.classList.remove('hidden');
+      document.getElementById('contact-confirm-text').textContent =
+        `Thank you, ${name}. Our senior gemologist has logged your "${service}" request in ${metal} and will reach out within 4 salon hours.`;
+    }
+
+    function resetContactForm() {
+      document.getElementById('bespoke-contact-form').reset();
+      document.getElementById('bespoke-contact-form').classList.remove('hidden');
+      document.getElementById('contact-confirmation').classList.add('hidden');
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. CHECKOUT PAYMENT INTERACTIONS & LIVE METALLIC CARD PREVIEW
+    // -----------------------------------------------------------------------
+    function selectPaymentMethod(method) {
+      ['card', 'upi', 'wire'].forEach(m => {
+        const tab = document.getElementById(`pay-tab-${m}`);
+        const panel = document.getElementById(`pay-panel-${m}`);
+        if (m === method) {
+          tab.classList.add('border-obsidian', 'bg-obsidian', 'text-white');
+          tab.classList.remove('border-stone-200', 'bg-alabaster', 'text-obsidian/80');
+          panel.classList.remove('hidden');
+        } else {
+          tab.classList.remove('border-obsidian', 'bg-obsidian', 'text-white');
+          tab.classList.add('border-stone-200', 'bg-alabaster', 'text-obsidian/80');
+          panel.classList.add('hidden');
+        }
+      });
+    }
+
+    function syncCardHolder(val) {
+      const upper = (val || 'AARAV MEHTA').toUpperCase();
+      document.getElementById('card-holder-input').value = upper;
+      document.getElementById('preview-card-name').textContent = upper;
+    }
+
+    function updateCardPreview() {
+      const name = document.getElementById('card-holder-input').value || 'AARAV MEHTA';
+      document.getElementById('preview-card-name').textContent = name.toUpperCase();
+    }
+
+    function formatAndPreviewCardNumber(input) {
+      let digits = input.value.replace(/\D/g, '').substring(0, 16);
+      let formatted = digits.replace(/(.{4})/g, '$1 ').trim();
+      input.value = formatted;
+      document.getElementById('preview-card-number').textContent = formatted || '4532 •••• •••• 8894';
+    }
+
+    function formatAndPreviewExpiry(input) {
+      let val = input.value.replace(/\D/g, '').substring(0, 4);
+      if (val.length >= 3) {
+        val = val.substring(0, 2) + '/' + val.substring(2);
+      }
+      input.value = val;
+      document.getElementById('preview-card-expiry').textContent = val || '09/29';
+    }
+
+    function applyPromoCode() {
+      const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
+      const feedback = document.getElementById('promo-feedback');
+      feedback.classList.remove('hidden');
+
+      if (code === 'AURELIA10') {
+        discountRate = 0.10;
+        feedback.textContent = '✓ 10% Atelier Privilege applied to your acquisition.';
+        updateCartUI();
+      } else {
+        discountRate = 0;
+        feedback.textContent = 'Invalid privilege code. Try AURELIA10.';
+        updateCartUI();
+      }
+    }
+
+    function processPayment() {
+      const btn = document.getElementById('complete-payment-btn');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-pulse">Verifying with Private Clearing Bank...</span>`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+
+        const clientName = document.getElementById('ship-name').value || 'Valued Patron';
+        const totalText = document.getElementById('checkout-grand-total').textContent;
+        const randomRef = 'AUR-2026-' + Math.floor(1000 + Math.random() * 9000);
+
+        document.getElementById('receipt-order-id').textContent = randomRef;
+        document.getElementById('receipt-client-name').textContent = clientName;
+        document.getElementById('receipt-total-paid').textContent = totalText;
+
+        document.getElementById('checkout-workspace').classList.add('hidden');
+        document.getElementById('payment-receipt-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1200);
+    }
+
+    function finishOrderAndReturn() {
+      cart = [];
+      discountRate = 0;
+      updateCartUI();
+      switchView('landing');
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. CUSTOM MAGNETIC CURSOR, 3D TILT SHEEN & SCROLL CHOREOGRAPHY
+    // -----------------------------------------------------------------------
+    function initCustomCursor() {
+      const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (!isFinePointer) return;
+
+      document.body.classList.add('custom-cursor-active');
+      const dot = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+      const ambientGlow = document.getElementById('ambient-glow');
+
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let ringX = mouseX;
+      let ringY = mouseY;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.left = `${mouseX}px`;
+        dot.style.top = `${mouseY}px`;
+
+        // Subtle ambient mouse glow
+        ambientGlow.style.background = `radial-gradient(620px circle at ${mouseX}px ${mouseY}px, rgba(197, 160, 89, 0.06), transparent 70%)`;
+      });
+
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.16;
+        ringY += (mouseY - ringY) * 0.16;
+        ring.style.left = `${ringX}px`;
+        ring.style.top = `${ringY}px`;
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+    }
+
+    function attachCursorListeners() {
+      const ring = document.getElementById('cursor-ring');
+      const label = document.getElementById('cursor-label');
+      if (!ring) return;
+
+      document.querySelectorAll('a, button, [data-cursor]').forEach(el => {
+        el.onmouseenter = () => {
+          const customText = el.getAttribute('data-cursor');
+          if (customText) {
+            label.textContent = customText;
+            ring.classList.add('cursor-action');
+          } else {
+            ring.classList.add('cursor-hover');
+          }
+        };
+        el.onmouseleave = () => {
+          ring.classList.remove('cursor-action', 'cursor-hover');
+        };
+      });
+    }
+
+    function attachTiltListeners() {
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.onmousemove = (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+
+          const rotateX = ((y - centerY) / centerY) * -4.5;
+          const rotateY = ((x - centerX) / centerX) * 4.5;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        };
+
+        card.onmouseleave = () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        };
+      });
+    }
+
+    function initScrollChoreography() {
+      const progressBar = document.getElementById('scroll-progress');
+      const header = document.getElementById('main-header');
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = `${progress}%`;
+
+        if (scrollTop > 30) {
+          header.classList.add('shadow-xs', 'bg-white/95');
+        } else {
+          header.classList.remove('shadow-xs', 'bg-white/95');
+        }
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('atelier-toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('opacity-0', 'translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+      }, 2400);
+    }
+
+    // Initialize Application on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      updateCartUI();
+      initCustomCursor();
+      attachTiltListeners();
+      attachCursorListeners();
+      initScrollChoreography();
+    });
+  </script>
+</body>
+</html>
